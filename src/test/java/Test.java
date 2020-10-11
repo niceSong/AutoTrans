@@ -1,7 +1,7 @@
-import obj.source.Source;
-import obj.source.SourceInner;
-import obj.source.SourceItem;
-import obj.target.Target;
+import source.Source;
+import source.SourceInner;
+import source.SourceItem;
+import target.Target;
 import com.tyytogether.trans.BeanTrans;
 
 import java.util.ArrayList;
