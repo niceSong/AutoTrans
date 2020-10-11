@@ -19,8 +19,13 @@ public class BeanTrans {
         return this;
     }
 
-    public <S, T> Object autoTrans(S source, Class<T> target) throws InstantiationException, IllegalAccessException {
-        return autoTrans(source, target.newInstance());
+    public <S, T> Object autoTrans(S source, Class<T> target) {
+        try {
+            return autoTrans(source, target.newInstance());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public Object autoTrans(Object source, Object target){
