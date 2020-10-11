@@ -1,13 +1,11 @@
-package source;
-
-public class SourceItem{
+public class TargetItem{
     String xxx;
 
-    public SourceItem(String xxx) {
+    public TargetItem(String xxx) {
         this.xxx = xxx;
     }
 
-    public SourceItem() { }
+    public TargetItem() { }
 
     public String getXxx() {
         return xxx;

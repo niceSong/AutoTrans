@@ -1,5 +1,3 @@
-package source;
-
 public class SourceInner {
     int a;
 
