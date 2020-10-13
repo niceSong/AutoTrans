@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 
 public class BeanTrans {
 
+    Object source;
+    Object target;
     Map<String, Operation> funMapping = new HashMap<>();
     Map<String, Object > valueMapping = new HashMap<>();
 
@@ -19,16 +21,22 @@ public class BeanTrans {
         return this;
     }
 
-    public <S, T> Object autoTrans(S source, Class<T> target) {
+    public static <S, T> BeanTrans converter(S source, Class<T> target){
+        BeanTrans beanTrans = new BeanTrans();
         try {
-            return autoTrans(source, target.newInstance());
+            beanTrans.source = source;
+            beanTrans.target = target.getDeclaredConstructor().newInstance();
         }catch (Exception e){
             e.printStackTrace();
         }
-        return null;
+        return beanTrans;
     }
 
-    public Object autoTrans(Object source, Object target){
+    public Object trans() {
+        return trans(this.source, this.target);
+    }
+
+    public Object trans(Object source, Object target){
         Map<String, Field> targetFieldsMap = Arrays.stream(target.getClass().getDeclaredFields()).collect(Collectors.toMap(it->it.getName(), it->it));
         return merge(source, target, targetFieldsMap);
     }
@@ -40,7 +48,7 @@ public class BeanTrans {
                 setFieldValue(valueMapping.get(targetName), target, targetField);
             }
             else if(funMapping.containsKey(targetName)){
-                setFieldValue(funMapping.get(targetName).operation(),
+                setFieldValue(funMapping.get(targetName).apply(),
                         target, targetField);
             }
             // 自动转换
@@ -49,11 +57,7 @@ public class BeanTrans {
                 if(lsDirectMerge(source, targetField, sourceField)){
                     setFieldValue(getFieldValue(source, sourceField), target, targetField);
                 }else {
-                    try {
-                        tryMerge(source, target, sourceField, targetField);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    tryMerge(source, target, sourceField, targetField);
                 }
             }
         });
@@ -71,7 +75,7 @@ public class BeanTrans {
         return false;
     }
 
-    public void tryMerge(Object source, Object target, Field sourceField, Field targetField) throws IllegalAccessException, InstantiationException, ClassNotFoundException {
+    public void tryMerge(Object source, Object target, Field sourceField, Field targetField) {
         Object sourceFieldValue = getFieldValue(source, sourceField);
         // 处理集合
         if(sourceFieldValue instanceof Collection){
@@ -87,26 +91,29 @@ public class BeanTrans {
                     return null;
                 } else {
                     try {
-                        Object targetItem = Class.forName(targetParamType.getTypeName()).newInstance();
-                        autoTrans(sourceItem, targetItem);
+                        Object targetItem = Class.forName(targetParamType.getTypeName()).getDeclaredConstructor().newInstance();
+                        trans(sourceItem, targetItem);
                         return targetItem;
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    return null;
                 }
-                return null;
             }).collect(Collectors.toList());
-
             setFieldValue(list, target, targetField);
         }
         // 处理类中类
         else {
             if(sourceFieldValue != null){
-                Object targetValue = (getFieldValue(target, targetField) == null)
-                        ? Class.forName(targetField.getType().getName()).newInstance()
-                        : getFieldValue(target, targetField);
-                autoTrans(sourceFieldValue, targetValue);
-                setFieldValue(targetValue, target, targetField);
+                try{
+                    Object targetValue = (getFieldValue(target, targetField) == null)
+                            ? Class.forName(targetField.getType().getName()).getDeclaredConstructor().newInstance()
+                            : getFieldValue(target, targetField);
+                    trans(sourceFieldValue, targetValue);
+                    setFieldValue(targetValue, target, targetField);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
         }
     }

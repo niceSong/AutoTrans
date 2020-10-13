@@ -14,10 +14,10 @@ public class Test {
         Source source = new Source(sourceItemList, inner);
 
         String fun = "fun";
-        Object target = new BeanTrans()
+        Object target = BeanTrans.converter(source, Target.class)
                 .mapping("str", "new ss")
                 .mapping("str", ()->{return "new ss:" + fun;})
-                .autoTrans(source, Target.class);
+                .trans();
         System.out.println(target);
     }
 

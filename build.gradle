@@ -23,5 +23,5 @@ repositories {
 
 dependencies {
     testCompile "junit:junit:4.11"  // Or whatever version
-    compileOnly 'org.projectlombok:lombok:1.18.2'
+    compileOnly 'org.ow2.asm:asm:5.0.4'
 }

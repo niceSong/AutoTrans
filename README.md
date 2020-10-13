@@ -11,10 +11,10 @@ Object target = new BeanTrans().autoTrans(obj, Target.class);
 ```
 ### 手动转换
 ```java
-Object target = new BeanTrans()
+Object target = BeanTrans.converter(source, Target.class)
         .mapping("str", "new ss")
         .mapping("str", ()->{return "new ss:" + fun;})
-        .autoTrans(obj, Target.class);
+        .trans();
 ```
 * 第一个`mapping`函数表示：将目标类中`str`属性的值，手动设置为"new ss"。
 * 第二个`mapping`函数表示：将目标类中`str`属性的值，手动设置为`lambda`形参的返回值。
