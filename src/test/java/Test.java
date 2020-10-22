@@ -11,14 +11,15 @@ public class Test {
             add(sourceItem);
         }};
         SourceInner inner = new SourceInner(1);
-        Source source = new Source(sourceItemList, inner);
+        Source source = new Source("ss", sourceItemList, inner);
 
         String fun = "fun";
-        Object target = BeanTrans.converter(source, Target.class)
+        // 自定义转换
+        Object diyTarget = BeanTrans.converter(source, Target.class)
                 .mapping("str", "new ss")
-                .mapping("str", ()->{return "new ss:" + fun;})
-                .trans();
-        System.out.println(target);
+                .mapping("str", ()->{return  "new ss:" + fun;})
+                .startTrans();
+        // 自动转换
+        Object autoTarget = BeanTrans.converter(source, Target.class).startTrans();
     }
-
 }

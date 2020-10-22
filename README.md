@@ -7,14 +7,14 @@
 ## 使用
 ### 自动转换
 ```java
-Object target = new BeanTrans().autoTrans(obj, Target.class);
+Object autoTarget = BeanTrans.converter(source, Target.class).startTrans();
 ```
 ### 手动转换
 ```java
-Object target = BeanTrans.converter(source, Target.class)
+Object diyTarget = BeanTrans.converter(source, Target.class)
         .mapping("str", "new ss")
-        .mapping("str", ()->{return "new ss:" + fun;})
-        .trans();
+        .mapping("str", ()->{return  "new ss:" + fun;})
+        .startTrans();
 ```
 * 第一个`mapping`函数表示：将目标类中`str`属性的值，手动设置为"new ss"。
-* 第二个`mapping`函数表示：将目标类中`str`属性的值，手动设置为`lambda`形参的返回值。
+* 第二个`mapping`函数表示：将目标类中`str`属性的值，手动设置为`lambda`的返回值。
