@@ -4,4 +4,5 @@ public class Target{
     String str;
     List<TargetItem> list;
     TargetInner inner;
+    String more;
 }

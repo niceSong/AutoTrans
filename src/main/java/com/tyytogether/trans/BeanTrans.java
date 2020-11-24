@@ -57,7 +57,11 @@ public class BeanTrans {
             // 自动转换
             else {
                 Field sourceField = getField(source, targetName);
-                if(lsDirectMerge(source, targetField, sourceField)){
+                // 源没有该属性时赋值为 null
+                if(sourceField == null){
+                    setFieldValue(null, target, targetField);
+                }
+                else if(lsDirectMerge(source, targetField, sourceField)){
                     setFieldValue(getFieldValue(source, sourceField), target, targetField);
                 }else {
                     tryMerge(source, target, sourceField, targetField);
