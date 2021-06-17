@@ -13,12 +13,13 @@ public class Test {
         SourceInner inner = new SourceInner(1);
         Source source = new Source("ss", sourceItemList, inner);
 
-        // 自定义转换
+//         自定义转换
 //        Object diyTarget = BeanTrans.converter(source, Target.class)
 //                .mapping("str", "new ss")
 //                .mapping("str", ()->{return  "new ss:" + fun;})
 //                .startTrans();
         // 自动转换
         Target autoTarget = (Target)BeanTrans.converter(source, Target.class).startTrans();
+        System.out.println(autoTarget);
     }
 }
