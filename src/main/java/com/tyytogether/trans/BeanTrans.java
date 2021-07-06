@@ -8,36 +8,30 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class BeanTrans {
+public class BeanTrans<R> {
     private static final ReflectionFactory reflectionFactory = ReflectionFactory.getReflectionFactory();
     Object source;
     Object target;
     Map<String, Supplier<?>> funMapping = new HashMap<>();
     Map<String, Object> valueMapping = new HashMap<>();
 
-    public BeanTrans mapping(String targetName, Object targetValue) {
+    public BeanTrans<?> mapping(String targetName, Object targetValue) {
         valueMapping.put(targetName, targetValue);
         return this;
     }
 
-    public BeanTrans mapping(String targetName, Supplier<?> operation) {
+    public BeanTrans<?> mapping(String targetName, Supplier<?> operation) {
         funMapping.put(targetName, operation);
         return this;
     }
 
-    public static <S, T> BeanTrans converter(S source, Class<T> target) {
-        BeanTrans beanTrans = new BeanTrans();
-        try {
-            beanTrans.source = source;
-            beanTrans.target = getInstance(target);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return beanTrans;
+    public <S> BeanTrans(S source, Class<?> target) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        this.source = source;
+        this.target = getInstance(target);
     }
 
-    public Object startTrans() {
-        return trans(this.source, this.target);
+    public R startTrans() {
+        return (R) trans(this.source, this.target);
     }
 
     public Object trans(Object source, Object target) {

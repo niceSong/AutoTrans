@@ -1,11 +1,12 @@
 import com.tyytogether.trans.BeanTrans;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 public class Test {
 
     @org.junit.Test
-    public void test(){
+    public void test() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
         SourceItem sourceItem = new SourceItem("ss");
         ArrayList<SourceItem> sourceItemList = new ArrayList<SourceItem>(){{
             add(sourceItem);
@@ -19,7 +20,8 @@ public class Test {
 //                .mapping("str", ()->{return  "new ss:" + fun;})
 //                .startTrans();
         // 自动转换
-        Target autoTarget = (Target)BeanTrans.converter(source, Target.class).startTrans();
-        System.out.println(autoTarget);
+        BeanTrans<Target> bt = new BeanTrans<>(source, Target.class);
+        Target target = bt.startTrans();
+        System.out.println(target);
     }
 }
